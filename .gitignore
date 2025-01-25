@@ -29,3 +29,5 @@ out/
 
 # Ignore coverage reports (if using testing tools)
 coverage/
+
+output.txt
