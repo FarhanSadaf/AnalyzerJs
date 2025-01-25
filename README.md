@@ -6,9 +6,8 @@ A tool to analyze JavaScript code for sensor data usage. It extracts **def/use c
 
 ## Features
 - Extracts **definitions** and **uses** of variables.
-- Identifies **external data transmission points** (e.g., `socket.send`, `fetch`, `axios.post`).
+- Identifies **external data transmission points** (e.g., `socket.send`, `fetch`, `axios.post`), which is configurable.
 - Supports modern JavaScript syntax (ES6+).
-- Configurable patterns for detecting data transmission methods.
 
 ---
 
