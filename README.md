@@ -54,15 +54,31 @@ The output will include:
 ### Patterns for Data Transmission
 The tool uses a JSON file (`def-use-chains-patterns.json`) to define patterns for detecting external data transmission methods. You can customize this file to add or modify patterns.
 
+Example `def-use-chains-patterns.json`:
+
+```json
+{
+  "CallExpression": [
+    {
+      "objectName": "socket",
+      "propertyName": "send",
+      "description": "WebSocket communication"
+    },
+    {
+      "objectName": "fetch",
+      "description": "Fetch API"
+    }
+  ],
+  "AssignmentExpression": [
+    {
+      "objectName": "document",
+      "propertyName": "cookie",
+      "description": "Cookies"
+    }
+  ]
+}
+```
 
 ---
 
-## Scripts
-
-### Start the Analyzer
-Run the following command:
-
-```bash
-npm start path/to/your/javascript/file.js
-```
 
