@@ -1,0 +1,58 @@
+{
+    "CallExpression": [
+      {
+        "objectName": "socket",
+        "propertyName": "send",
+        "description": "WebSocket communication"
+      },
+      {
+        "objectName": "fetch",
+        "description": "Fetch API"
+      },
+      {
+        "objectName": "xhr",
+        "propertyName": "send",
+        "description": "XMLHttpRequest"
+      },
+      {
+        "objectName": "axios",
+        "propertyName": "post",
+        "description": "Axios library"
+      },
+      {
+        "objectName": "EventSource",
+        "description": "Server-Sent Events"
+      },
+      {
+        "objectName": "RTCPeerConnection",
+        "description": "WebRTC"
+      },
+      {
+        "propertyName": "postMessage",
+        "description": "MessageChannel API"
+      },
+      {
+        "objectName": "FormData",
+        "description": "File Uploads"
+      },
+      {
+        "objectName": "indexedDB",
+        "description": "IndexedDB"
+      },
+      {
+        "objectName": "BroadcastChannel",
+        "description": "BroadcastChannel API"
+      },
+      {
+        "objectName": "Worker",
+        "description": "Web Workers"
+      }
+    ],
+    "AssignmentExpression": [
+      {
+        "objectName": "document",
+        "propertyName": "cookie",
+        "description": "Cookies"
+      }
+    ]
+  }
