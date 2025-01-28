@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const { extractDefUseChains } = require('./def-use-chains');
 
 function analyzeSensorDataUsage(jsCode, sensorVars) {
