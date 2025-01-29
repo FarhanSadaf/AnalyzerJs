@@ -1,5 +1,6 @@
 const fs = require('fs');
-const { extractDefUseChains, extractExternalDataSendPoints } = require('./def-use-chains');
+const { extractDefUseChains } = require('./def-use-chains/all-chains');
+const { extractExternalDataSendPoints } = require('./def-use-chains/external-send');
 
 function getVariableDefsAndUses(jsCode, variableNames) {
     const defUseChains = extractDefUseChains(jsCode);
