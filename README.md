@@ -6,7 +6,7 @@ A tool to analyze JavaScript code for sensor data usage. It extracts **def/use c
 
 ## Features
 - Extracts **definitions** and **uses** of variables.
-- Identifies **external data transmission points** (e.g., `socket.send`, `fetch`, `axios.post`), which is configurable.
+- Identifies **external data transmission points** (e.g., `socket.send`).
 - Supports modern JavaScript syntax (ES6+).
 
 ---
@@ -48,37 +48,4 @@ The output will include:
 - **External Data Send Points**: Locations where data is transmitted externally.
 
 ---
-
-## Configuration
-
-### Patterns for Data Transmission
-The tool uses a JSON file (`def-use-chains-patterns.json`) to define patterns for detecting external data transmission methods. You can customize this file to add or modify patterns.
-
-Example `def-use-chains-patterns.json`:
-
-```json
-{
-  "CallExpression": [
-    {
-      "objectName": "socket",
-      "propertyName": "send",
-      "description": "WebSocket communication"
-    },
-    {
-      "objectName": "fetch",
-      "description": "Fetch API"
-    }
-  ],
-  "AssignmentExpression": [
-    {
-      "objectName": "document",
-      "propertyName": "cookie",
-      "description": "Cookies"
-    }
-  ]
-}
-```
-
----
-
 
