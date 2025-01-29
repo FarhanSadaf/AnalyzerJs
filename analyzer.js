@@ -32,22 +32,23 @@ function main() {
     // Load the JavaScript code from the specified file
     const jsCode = fs.readFileSync(filePath, 'utf-8');
 
-    /*
     // Sensor-related variables to track
     const sensorVars = ['headPosition', 'headQuaternion', 'headEuler', 'controller1', 'controller2'];
     getVariableDefsAndUses(jsCode, sensorVars);
-    */
 
     // Extract all the variable names
     const defUseChains = extractDefUseChains(jsCode);
     console.log(Object.keys(defUseChains));
 
     // External data send analysis
-    const externalDataSendPoints = extractExternalDataSendPoints(jsCode);
+    const { senderVariables, externalDataSendPoints } = extractExternalDataSendPoints(jsCode);
     console.log('External Data Send Points:');
     externalDataSendPoints.forEach(point => {
         console.log(`- Line ${point.loc.start.line}: ${point.description}`);
     });
+
+    console.log('Sender Variables:');
+    console.log(Object.keys(senderVariables));
 }
 
 main();

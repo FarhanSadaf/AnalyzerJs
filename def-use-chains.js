@@ -99,7 +99,7 @@ function extractExternalDataSendPoints(jsCode) {
         }
     });
 
-    return externalDataSendPoints;
+    return { senderVariables, externalDataSendPoints };
 }
 
 // Export the function for use in other modules
