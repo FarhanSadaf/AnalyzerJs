@@ -1,30 +1,23 @@
 const fs = require('fs');
-const { extractDefUseChains } = require('./def-use-chains');
+const { extractDefUseChains, extractExternalDataSendPoints } = require('./def-use-chains');
 
-function analyzeSensorDataUsage(jsCode, sensorVars) {
-    // Extract def/use chains and external data send points
-    const { defUseChains, externalDataSendPoints } = extractDefUseChains(jsCode);
+function getVariableDefsAndUses(jsCode, variableNames) {
+    const defUseChains = extractDefUseChains(jsCode);
 
-    // Filter def/use chains for sensor-related variables
-    const sensorDefUseChains = {};
-    for (const varName of sensorVars) {
+    const variableDefsAndUses = {};
+    for (const varName of variableNames) {
         if (defUseChains[varName]) {
-            sensorDefUseChains[varName] = defUseChains[varName];
+            variableDefsAndUses[varName] = defUseChains[varName];
         }
     }
 
     // Print results
-    console.log('Sensor Data Def/Use Chains:');
-    for (const [varName, chains] of Object.entries(sensorDefUseChains)) {
+    console.log('Variable Def/Use Chains:');
+    for (const [varName, chains] of Object.entries(variableDefsAndUses)) {
         console.log(`Variable: ${varName}`);
         console.log(`  Definitions: ${JSON.stringify(chains.defs, null, 2)}`);
         console.log(`  Uses: ${JSON.stringify(chains.uses, null, 2)}`);
         console.log();
-    }
-
-    console.log('External Data Send Points:');
-    for (const point of externalDataSendPoints) {
-        console.log(`Line: ${JSON.stringify(point, null, 2)}`);
     }
 }
 
@@ -39,11 +32,22 @@ function main() {
     // Load the JavaScript code from the specified file
     const jsCode = fs.readFileSync(filePath, 'utf-8');
 
+    /*
     // Sensor-related variables to track
     const sensorVars = ['headPosition', 'headQuaternion', 'headEuler', 'controller1', 'controller2'];
+    getVariableDefsAndUses(jsCode, sensorVars);
+    */
 
-    analyzeSensorDataUsage(jsCode, sensorVars);
+    // Extract all the variable names
+    const defUseChains = extractDefUseChains(jsCode);
+    console.log(Object.keys(defUseChains));
+
+    // External data send analysis
+    const externalDataSendPoints = extractExternalDataSendPoints(jsCode);
+    console.log('External Data Send Points:');
+    externalDataSendPoints.forEach(point => {
+        console.log(`- Line ${point.loc.start.line}: ${point.description}`);
+    });
 }
 
-// Run the script
 main();

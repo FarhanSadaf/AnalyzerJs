@@ -2,9 +2,6 @@ const fs = require('fs');
 const acorn = require('acorn');
 const walk = require('acorn-walk');
 
-// Load patterns from JSON file
-const patterns = JSON.parse(fs.readFileSync('def-use-chains-patterns.json', 'utf-8'));
-
 function extractDefUseChains(jsCode) {
     // Parse the JavaScript code into an abstract syntax tree (AST)
     const ast = acorn.parse(jsCode, {
@@ -14,7 +11,6 @@ function extractDefUseChains(jsCode) {
     });
 
     const defUseChains = {};
-    const externalDataSendPoints = [];
 
     // Define a custom visitor for AST traversal
     const visitor = {
@@ -38,49 +34,7 @@ function extractDefUseChains(jsCode) {
             } else {
                 defUseChains[varName] = { defs: [node.loc], uses: [] };
             }
-        },
-
-        // Tracking external data send points
-        CallExpression(node) {
-            // CallExpression node represents a function or method call
-            if (node.callee.type === 'MemberExpression') {
-                const objectName = node.callee.object.name;
-                const propertyName = node.callee.property.name;
-
-                // Check against patterns for CallExpression
-                patterns.CallExpression.forEach((pattern) => {
-                    if (
-                        (!pattern.objectName || pattern.objectName === objectName) &&
-                        (!pattern.propertyName || pattern.propertyName === propertyName)
-                    ) {
-                        externalDataSendPoints.push({
-                            loc: node.loc,
-                            description: pattern.description,
-                        });
-                    }
-                });
-            }
-        },
-
-        AssignmentExpression(node) {
-            // AssignmentExpression node represents an assignment operation (e.g., =, +=, -=)
-            if (node.left.type === 'MemberExpression') {
-                const objectName = node.left.object.name;
-                const propertyName = node.left.property.name;
-
-                patterns.AssignmentExpression.forEach((pattern) => {
-                    if (
-                        pattern.objectName === objectName &&
-                        pattern.propertyName === propertyName
-                    ) {
-                        externalDataSendPoints.push({
-                            loc: node.loc,
-                            description: pattern.description,
-                        });
-                    }
-                });
-            }
-        },
+        }
     };
 
     // Traverse the AST using the `full` method
@@ -90,8 +44,63 @@ function extractDefUseChains(jsCode) {
         }
     });
 
-    return { defUseChains, externalDataSendPoints };
+    return defUseChains;
+}
+
+// Regex patterns to identify sender classes and methods
+const SENDER_CLASSES_REGEX = /\b(WebSocket|XMLHttpRequest|RTCPeerConnection|EventSource|Worker|WebRTC)\b/;
+const SENDER_METHODS_REGEX = /^(send|post|postMessage|createOffer|createAnswer|open)$/i;
+
+function findSenderVariables(ast) {
+    const senderVariables = {};
+
+    walk.full(ast, (node) => {
+        if (node.type === 'VariableDeclarator' && node.init && node.init.type === 'NewExpression') {
+            const callee = node.init.callee;
+            if (callee.type === 'Identifier' && SENDER_CLASSES_REGEX.test(callee.name)) {
+                const varName = node.id.name;
+                senderVariables[varName] = callee.name;
+            }
+        }
+    });
+
+    return senderVariables;
+}
+
+function extractExternalDataSendPoints(jsCode) {
+    const ast = acorn.parse(jsCode, {
+        ecmaVersion: 2020,
+        sourceType: 'module',
+        locations: true,
+    });
+
+    const senderVariables = findSenderVariables(ast);
+    const externalDataSendPoints = [];
+
+    walk.full(ast, (node) => {
+        if (node.type === 'CallExpression') {
+            const callee = node.callee;
+            if (callee.type === 'MemberExpression') {
+                const object = callee.object;
+                const property = callee.property;
+
+                if (object.type === 'Identifier' && property.type === 'Identifier') {
+                    const varName = object.name;
+                    const methodName = property.name;
+
+                    if (senderVariables[varName] && SENDER_METHODS_REGEX.test(methodName)) {
+                        externalDataSendPoints.push({
+                            loc: node.loc,
+                            description: `Data sent via ${senderVariables[varName]} method '${methodName}'`
+                        });
+                    }
+                }
+            }
+        }
+    });
+
+    return externalDataSendPoints;
 }
 
 // Export the function for use in other modules
-module.exports = { extractDefUseChains };
+module.exports = { extractDefUseChains, extractExternalDataSendPoints };
