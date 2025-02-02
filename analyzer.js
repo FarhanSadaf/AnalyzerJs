@@ -1,10 +1,7 @@
 const fs = require('fs');
-const { extractDefUseChains } = require('./def-use-chains/all-chains');
-const { extractExternalDataSendPoints } = require('./def-use-chains/external-send');
+const StaticCodeAnalyzer = require('./static-code-analyzer/StaticCodeAnalyzer');
 
-function getVariableDefsAndUses(jsCode, variableNames) {
-    const defUseChains = extractDefUseChains(jsCode);
-
+function getVariableDefsAndUses(defUseChains, variableNames) {
     const variableDefsAndUses = {};
     for (const varName of variableNames) {
         if (defUseChains[varName]) {
@@ -33,23 +30,24 @@ function main() {
     // Load the JavaScript code from the specified file
     const jsCode = fs.readFileSync(filePath, 'utf-8');
 
+    const analyzer = new StaticCodeAnalyzer('./config.json', jsCode);
+
+    // Extract def/use chains
+    const defUseChains = analyzer.extractDefUseChains();
+
     // Sensor-related variables to track
     const sensorVars = ['headPosition', 'headQuaternion', 'headEuler', 'controller1', 'controller2'];
-    getVariableDefsAndUses(jsCode, sensorVars);
-
-    // Extract all the variable names
-    const defUseChains = extractDefUseChains(jsCode);
-    console.log(Object.keys(defUseChains));
+    getVariableDefsAndUses(defUseChains, sensorVars);
 
     // External data send analysis
-    const { senderVariables, externalDataSendPoints } = extractExternalDataSendPoints(jsCode);
+    const senderVariables = analyzer.extractSendVariables();
+    console.log('Sender Variables:', senderVariables);
+
+    const externalDataSendPoints = analyzer.extractExternalDataSendPoints();
     console.log('External Data Send Points:');
     externalDataSendPoints.forEach(point => {
         console.log(`- Line ${point.loc.start.line}: ${point.description}`);
     });
-
-    console.log('Sender Variables:');
-    console.log(Object.keys(senderVariables));
 }
 
 main();

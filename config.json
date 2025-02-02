@@ -1,0 +1,4 @@
+{
+  "senderClasses": ["WebSocket", "XMLHttpRequest", "RTCPeerConnection", "EventSource", "Worker", "WebRTC"],
+  "senderMethods": ["send", "post", "postMessage", "createOffer", "createAnswer", "open"]
+}
