@@ -1,4 +1,32 @@
 {
-  "senderClasses": ["WebSocket", "XMLHttpRequest", "RTCPeerConnection", "EventSource", "Worker", "WebRTC"],
-  "senderMethods": ["send", "post", "postMessage", "createOffer", "createAnswer", "open"]
+  "senderClasses": [
+    "WebSocket",
+    "XMLHttpRequest",
+    "RTCPeerConnection",
+    "EventSource",
+    "Worker",
+    "WebRTC"
+  ],
+  "senderMethods": [
+    "send",
+    "post",
+    "postMessage",
+    "createOffer",
+    "createAnswer",
+    "open"
+  ],
+  "sensorClasses": {
+    "THREE.WebGLRenderer": [
+      "xr.getController",
+      "xr.getSession",
+      "xr.getCamera"
+    ],
+    "THREE.XRCamera": [
+      "getWorldPosition",
+      "getWorldQuaternion"
+    ],
+    "THREE.XRController": [
+      "matrixWorld.decompose"
+    ]
+  }
 }

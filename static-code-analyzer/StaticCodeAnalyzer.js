@@ -1,6 +1,7 @@
 const acorn = require('acorn');
 const DefUseChains = require('./DefUseChains');
 const ExternalDataSends = require('./ExternalDataSends');
+const SensorDataUsage = require('./SensorDataUsage');
 const fs = require('fs');
 
 class StaticCodeAnalyzer {
@@ -15,6 +16,7 @@ class StaticCodeAnalyzer {
         });
 
         this.externalDataSendsAnalyzer = new ExternalDataSends(this.config);
+        this.sensorDataAnalyzer = new SensorDataUsage(this.config);
     }
 
     extractDefUseChains() {
@@ -27,6 +29,10 @@ class StaticCodeAnalyzer {
     
     extractExternalDataSendPoints() {
         return this.externalDataSendsAnalyzer.extract(this.ast);
+    }
+    
+    extractSensorDataUsage() {
+        return this.sensorDataAnalyzer.extract(this.ast);
     }
 }
 

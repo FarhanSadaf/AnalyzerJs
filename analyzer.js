@@ -48,6 +48,11 @@ function main() {
     externalDataSendPoints.forEach(point => {
         console.log(`- Line ${point.loc.start.line}: ${point.description}`);
     });
+
+    // Extract sensor data usage points
+    const sensorDataUsage = analyzer.extractSensorDataUsage();
+    console.log('Sensor Data Usage Points:', JSON.stringify(sensorDataUsage, null, 2));
+    console.log('Sensor Variables:', analyzer.sensorDataAnalyzer.sensorVariables);
 }
 
 main();
