@@ -1,15 +1,38 @@
-# AnalyzerJS
+# AnalyzerJs
+Static code analysis tool for JavaScript that detects and analyzes:
 
-A tool to analyze JavaScript code for sensor data usage. It extracts **def/use chains** and identifies **external data transmission points** in JavaScript code using static analysis.
+- **Sensor Data Usage:** Tracks the creation and usage of sensor-related objects, methods, and properties.
+- **External Data Sends:** Identifies points where data is sent to external systems (e.g., via WebSocket, XMLHttpRequest).
+- **Def/Use Chains:** Tracks variable definitions and their uses to analyze data flow in the code.
 
----
+This tool is designed to help developers understand and analyze JavaScript codebases for potential issues, dependencies, and data flows.
 
 ## Features
-- Extracts **definitions** and **uses** of variables.
-- Identifies **external data transmission points** (e.g., `socket.send`).
-- Supports modern JavaScript syntax (ES6+).
+### Sensor Data Usage Analysis:
+- Detects the creation of sensor-related objects (e.g., `THREE.WebGLRenderer`).
+- Tracks method calls (e.g., `xr.getController`) and property accesses (e.g., `matrixWorld.decompose`) on these objects.
 
----
+### External Data Sends:
+- Identifies points where data is sent to external systems (e.g., `WebSocket.send`, `XMLHttpRequest.open`).
+
+### Def/Use Chains:
+- Tracks where variables are defined and used in the code, providing insights into data flow.
+
+### Configurable:
+- Uses a `config.json` file to define sensor-related classes, methods, and external data senders to make it adaptable to different projects.
+
+
+## How It Works
+### Sensor Data Usage:
+- Detects the creation of sensor-related objects (e.g., `THREE.WebGLRenderer`).
+- Tracks method calls (e.g., `xr.getController`) and property accesses (e.g., `matrixWorld.decompose`).
+
+### External Data Sends:
+- Identifies points where data is sent to external systems (e.g., `WebSocket.send`).
+
+### Def/Use Chains:
+- Tracks where variables are defined and used, providing insights into data flow.
+
 
 ## Installation
 
@@ -25,27 +48,4 @@ A tool to analyze JavaScript code for sensor data usage. It extracts **def/use c
 
 ---
 
-## Usage
-
-### Analyze a JavaScript File
-Run the analyzer script with the path to your JavaScript file:
-
-```bash
-npm start path/to/your/javascript/file.js
-```
-
-### Example Output
-For a JavaScript file like this:
-
-```javascript
-const headPosition = new THREE.Vector3();
-console.log(headPosition);
-socket.send('Hello, server!');
-```
-
-The output will include:
-- **Def/Use Chains**: Definitions and uses of variables.
-- **External Data Send Points**: Locations where data is transmitted externally.
-
----
 
